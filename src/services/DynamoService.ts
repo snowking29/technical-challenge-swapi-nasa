@@ -25,7 +25,7 @@ export class DynamoService {
 		Logger.info(`✅ Item was saved in DynamoDB.`)
   }
 
-  async getHistory(limit = 50) {
+  async getHistory(limit: number) {
 		Logger.info(`🚀 Getting History - Registers Limit: ${limit}`)
     const command = new QueryCommand({
       TableName: this.tableName,

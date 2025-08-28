@@ -3,9 +3,10 @@ import { Logger } from "../utils/Logger";
 
 export const handler = async () => {
   try {
+    const limit = Number.parseInt(process.env.DYNAMO_HISTORY_LIMIT || '50');
     Logger.info(`Getting history`)
     const dynamo = new DynamoService();
-    const history = await dynamo.getHistory();
+    const history = await dynamo.getHistory(limit);
 
     Logger.info(`Returning succcess response: ${JSON.stringify(history)}`)
     return { 

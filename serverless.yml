@@ -23,6 +23,7 @@ provider:
     SWAPI_ENDOPINT: 'https://swapi.dev/api'
     SPOTIFY_TOKEN_ENDPOINT: 'https://accounts.spotify.com/api/token'
     SPOTIFY_SEARCH_ENDPOINT: 'https://api.spotify.com/v1/search'
+    DYNAMO_HISTORY_LIMIT: 50
   lambdaHashingVersion: 20201221
   iam: 
     role:
