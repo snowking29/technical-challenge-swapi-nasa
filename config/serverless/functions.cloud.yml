@@ -1,0 +1,32 @@
+getFusion:
+  name: ${self:service}-${self:provider.stage}-getFusion
+  handler: src/handlers/getFusion.handler
+  events:
+    - http:
+        path: fusionados
+        method: get
+        cors: true
+postResource:
+  name: ${self:service}-${self:provider.stage}-postResource
+  handler: src/handlers/postResource.handler
+  events:
+    - http:
+        path: almacenar
+        method: post
+        cors: true
+getHistory:
+  name: ${self:service}-${self:provider.stage}-getHistory
+  handler: src/handlers/getHistory.handler
+  events:
+    - http:
+        path: historial
+        method: get
+        cors: true
+swagger:
+  name: ${self:service}-${self:provider.stage}-swagger
+  handler: src/handlers/swagger.handler
+  events:
+    - http:
+        path: docs
+        method: get
+        cors: true

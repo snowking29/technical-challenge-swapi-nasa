@@ -1,0 +1,45 @@
+service: ${self:custom.service}
+frameworkVersion: "3"
+
+custom: ${file(config/serverless/common-custom-config.yaml)}
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 256
+  timeout: 6
+  versionFunctions: false
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${self:custom.regions.code.${opt:stage}}
+  logRetentionInDays: 5
+  deploymentPrefix: serverless
+  environment:
+    NASA_API_KEY: ''
+    SPOTIFY_CLIENT_ID: ''
+    SPOTIFY_CLIENT_SECRET: ''
+    CACHE_TTL: 1800
+    DYNAMO_TABLE_NAME: "FusionTable"
+    IS_OFFLINE: false
+    SWAPI_ENDOPINT: 'https://swapi.dev/api'
+    SPOTIFY_TOKEN_ENDPOINT: 'https://accounts.spotify.com/api/token'
+    SPOTIFY_SEARCH_ENDPOINT: 'https://api.spotify.com/v1/search'
+    DYNAMO_HISTORY_LIMIT: 50
+  lambdaHashingVersion: 20201221
+  iam: 
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:${self:custom.regions.code.${opt:stage}}:${aws:accountId}:table/FusionTable
+            - arn:aws:dynamodb:${self:custom.regions.code.${opt:stage}}:${aws:accountId}:table/FusionTable/index/*
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+functions: ${file(config/serverless/functions.${self:custom.functionsFile}.yml)}
+resources: ${file(config/serverless/resources.yml)}

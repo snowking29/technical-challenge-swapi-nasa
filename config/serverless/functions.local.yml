@@ -1,0 +1,24 @@
+getFusion:
+  handler: src/handlers/getFusion.handler
+  events:
+    - http:
+        path: fusionados
+        method: get
+postResource:
+  handler: src/handlers/postResource.handler
+  events:
+    - http:
+        path: almacenar
+        method: post
+getHistory:
+  handler: src/handlers/getHistory.handler
+  events:
+    - http:
+        path: historial
+        method: get
+swagger:
+  handler: src/handlers/swagger.handler
+  events:
+    - http:
+        path: docs
+        method: get
