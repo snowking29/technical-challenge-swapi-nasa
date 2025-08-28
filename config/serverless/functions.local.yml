@@ -16,3 +16,9 @@ getHistory:
     - http:
         path: historial
         method: get
+swagger:
+  handler: src/handlers/swagger.handler
+  events:
+    - http:
+        path: docs
+        method: get

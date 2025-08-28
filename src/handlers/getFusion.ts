@@ -7,7 +7,7 @@ export const handler: APIGatewayProxyHandler = async (event: any) => {
 
   const characterId = event.queryStringParameters?.id;
   const characterName = event.queryStringParameters?.name;
-  const facade = new FusionFacade(characterId);
+  const facade = new FusionFacade(characterId, characterName);
   try {
     const data = await facade.getFusionedData(characterName);
     Logger.info(`Getting Data from Facade: ${JSON.stringify(data)}`)

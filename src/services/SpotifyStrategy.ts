@@ -7,16 +7,19 @@ export class SpotifyStrategy implements IFusionStrategy<Spotify> {
   private character: string;
   private spotifyClientId = process.env.SPOTIFY_CLIENT_ID || '';
   private spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || '';
+  private baseTokenEndpoint: string;
+  private baseSearchEndpoint: string;
 
   constructor(character?: string) {
+    this.baseTokenEndpoint = process.env.SPOTIFY_TOKEN_ENDPOINT || "https://accounts.spotify.com/api/token";
+    this.baseSearchEndpoint = process.env.SPOTIFY_SEARCH_ENDPOINT || "https://api.spotify.com/v1/search";
     this.character = character || 'Darth Vader';
   }
 
   private async getSpotifyToken(): Promise<string> {
-    const tokenUrl = 'https://accounts.spotify.com/api/token';
     const credentials = Buffer.from(`${this.spotifyClientId}:${this.spotifyClientSecret}`).toString('base64');
 
-    const res = await fetch(tokenUrl, {
+    const res = await fetch(this.baseTokenEndpoint, {
       method: 'POST',
       headers: {
         'Authorization': `Basic ${credentials}`,
@@ -49,7 +52,7 @@ export class SpotifyStrategy implements IFusionStrategy<Spotify> {
     const token = await this.getSpotifyToken();
 
     const search = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track&market=ES&limit=1`,
+      `${this.baseSearchEndpoint}?q=${encodeURIComponent(searchQuery)}&type=track&market=ES&limit=1`,
       { 
         headers: { 
           Authorization: `Bearer ${token}` 
@@ -71,9 +74,8 @@ export class SpotifyStrategy implements IFusionStrategy<Spotify> {
     }
 
     return {
-      personaje: this.character,
-      tema: track.name,
-      artistas: track.artists.map((a: any) => a.name),
+      track: track.name,
+      artists: track.artists.map((a: any) => a.name),
       album: track.album.name,
       release_date: track.album.release_date,
       duration_ms: track.duration_ms,

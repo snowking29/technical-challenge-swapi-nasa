@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand, QueryCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, GetItemCommand, PutItemCommand, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { Logger } from "../utils/Logger";
 export class DynamoService {
   private dynamoClient = new DynamoDBClient({
@@ -49,34 +49,41 @@ export class DynamoService {
 
   async getCache(key: string) {
 		Logger.info(`🚀 Getting Cache - Key: ${key}`)
-    const command = new QueryCommand({
+    const command = new GetItemCommand({
       TableName: this.tableName,
-      KeyConditionExpression: "id = :key AND #t = :type",
-      ExpressionAttributeNames: {
-        "#t": "type"
-      },
-      ExpressionAttributeValues: {
-        ":key": { S: key },
-        ":type": { S: "cache" }
-      },
-      Limit: 1
+      Key: {
+        id: { S: key },
+        type: { S: "cache" }
+      }
     });
     const result = await this.dynamoClient.send(command);
-    if (!result.Items?.length) {
-			Logger.info(`❌ Couldn't find results`)
+    if (!result.Item) {
+			Logger.info(`❌ Couldn't find cache for key: ${key}`);
 			return null;
 		}
-    const item = result.Items[0];
+    const item = result.Item;
     const cachedTime = new Date(item.timestamp.S!);
     if ((Date.now() - cachedTime.getTime()) / 1000 > Number(this.cacheTTL)) {
-			Logger.info(`❌ Cache expired`)
+			Logger.info(`❌ Cache expired for key: ${key}`);
       return null;
     }
+    Logger.info(`✅ Cache hit for key: ${key}`);
     return JSON.parse(item.payload.S!);
   }
 
   async setCache(key: string, data: any) {
-		Logger.info(`🟡 Setting Cache`)
-    await this.saveItem({ id: key, type: "cache", payload: data });
+		Logger.info(`🟡 Setting Cache for key: ${key}`);
+    const command = new PutItemCommand({
+      TableName: this.tableName,
+      Item: {
+        id: { S: key },
+        type: { S: "cache" },
+        payload: { S: JSON.stringify(data) },
+        timestamp: { S: new Date().toISOString() }
+      }
+    });
+
+    await this.dynamoClient.send(command);
+    Logger.info(`✅ Cache item saved`);
   }
 }

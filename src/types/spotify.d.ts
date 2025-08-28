@@ -1,7 +1,6 @@
-export interface Spotify {
-  personaje: string;            
-  tema: string;                 
-  artistas: string[];           
+export interface Spotify {          
+  track: string;                 
+  artists: string[];           
   album: string;                
   release_date: string;         
   duration_ms: number;          

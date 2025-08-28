@@ -20,6 +20,9 @@ provider:
     CACHE_TTL: 1800
     DYNAMO_TABLE_NAME: "FusionTable"
     IS_OFFLINE: false
+    SWAPI_ENDOPINT: 'https://swapi.dev/api'
+    SPOTIFY_TOKEN_ENDPOINT: 'https://accounts.spotify.com/api/token'
+    SPOTIFY_SEARCH_ENDPOINT: 'https://api.spotify.com/v1/search'
   lambdaHashingVersion: 20201221
   iam: 
     role:

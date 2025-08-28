@@ -6,26 +6,43 @@ import https from "https";
 
 export class SwapiStrategy implements IFusionStrategy<SwapiPerson> {
   private baseUrl: string;
+  private characterName?: string;
 
-  constructor(private characterId?: string) {
-    this.baseUrl = "https://swapi.dev/api";
+  constructor(private characterId?: string , characterName?: string) {
+    this.baseUrl = process.env.SWAPI_ENDOPINT || "https://swapi.dev/api";
+    this.characterName = characterName;
   }
 
   async fetchAndTransform(): Promise<SwapiPerson> {
-    const id = this.characterId || "1";
-    const url = `${this.baseUrl}/people/${id}`;
-
-    Logger.info(`Fetching character from URL: ${url}`);
+    Logger.info(`Fetching SWAPI character - ID: ${this.characterId}, Name: ${this.characterName}`);
     const agent = new https.Agent({ rejectUnauthorized: false });
-
     let data;
+
     try {
-      const res = await fetch(url, { agent });
-      data = await res.json();
+      if (this.characterId) {
+
+        const url = `${this.baseUrl}/people/${this.characterId}`;
+        Logger.info(`Fetching character by ID from URL: ${url}`);
+        const res = await fetch(url, { agent });
+        data = await res.json();
+
+      } else if (this.characterName) {
+        const url = `${this.baseUrl}/people/?search=${encodeURIComponent(this.characterName)}`;
+        Logger.info(`Searching character by name from URL: ${url}`);
+
+        const res = await fetch(url, { agent });
+        const json = await res.json();
+        data = json.results?.[0];
+
+        if (!data) throw new Error(`Character not found in SWAPI: ${this.characterName}`);
+      } else {
+        throw new Error('No character ID or name provided');
+      }
     } catch (err) {
       Logger.error(err);
       throw err;
     }
+    
     Logger.info(`Got character from Swapi: ${JSON.stringify(data)}`);
     return {
       name: data.name,

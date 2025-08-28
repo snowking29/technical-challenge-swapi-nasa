@@ -22,3 +22,11 @@ getHistory:
         path: historial
         method: get
         cors: true
+swagger:
+  name: ${self:service}-${self:provider.stage}-swagger
+  handler: src/handlers/swagger.handler
+  events:
+    - http:
+        path: docs
+        method: get
+        cors: true
