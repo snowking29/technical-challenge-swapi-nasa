@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SWAPI-Spotify Fusion API",
+    "version": "1.0.0",
+    "description": "API para fusionar datos de personajes de Star Wars con canciones de Spotify"
+  },
+  "servers": [
+    {
+      "url": "https://{apiId}.execute-api.{region}.amazonaws.com/{stage}",
+      "variables": {
+        "apiId": { "default": "YOUR_API_ID" },
+        "region": { "default": "us-east-1" },
+        "stage": { "default": "dev" }
+      }
+    }
+  ],
+  "paths": {
+    "/fusionados": {
+      "get": {
+        "summary": "Obtener datos fusionados de un personaje",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "ID del personaje de SWAPI",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Nombre del personaje (opcional)",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos fusionados obtenidos correctamente",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          },
+          "500": { "description": "Error en el servidor" }
+        }
+      }
+    },
+    "/almacenar": {
+      "post": {
+        "summary": "Almacenar un recurso personalizado",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recurso almacenado correctamente",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "example": { "success": true } }
+              }
+            }
+          },
+          "500": { "description": "Error en el servidor" }
+        }
+      }
+    },
+    "/historial": {
+      "get": {
+        "summary": "Obtener historial de recursos fusionados",
+        "responses": {
+          "200": {
+            "description": "Historial obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          },
+          "500": { "description": "Error en el servidor" }
+        }
+      }
+    }
+  }
+}
