@@ -1,5 +1,18 @@
-transfer:
-  handler: src/lambda/transfer.handler
-  name: ${self:custom.stage}-${self:service}
-  description: API used for transfer files to different protocols
-  timeout: 600
+getFusion:
+  handler: src/handlers/getFusion.handler
+  events:
+    - http:
+        path: fusionados
+        method: get
+postResource:
+  handler: src/handlers/postResource.handler
+  events:
+    - http:
+        path: almacenar
+        method: post
+getHistory:
+  handler: src/handlers/getHistory.handler
+  events:
+    - http:
+        path: historial
+        method: get

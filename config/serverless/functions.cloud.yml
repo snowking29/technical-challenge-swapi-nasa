@@ -1,4 +1,4 @@
-getCombined:
+getFusion:
   name: ${self:service}-${self:provider.stage}-getFusion
   handler: src/handlers/getFusion.handler
   memorySize: 256

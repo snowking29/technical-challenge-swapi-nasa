@@ -3,7 +3,7 @@ serviceName: swapi-nasa
 serviceCode: challenge
 serviceType: workload
 service: ${self:custom.serviceType}-${self:custom.serviceCode}-${self:custom.serviceName}
-functionsFile: ${param:functions, 'cloud'}
+functionsFile: ${param:functions, 'local'}
 accountId:
   dev: ${aws:accountId}
   qas: ${aws:accountId}
@@ -18,3 +18,11 @@ regions:
     dev: UE1
     qas: UE1
     prd: UE1
+esbuild:
+  bundle: true
+  minify: false
+  sourcemap: false
+  target: node20
+  platform: node
+  external: []
+  watch: true

@@ -13,14 +13,16 @@ provider:
   logRetentionInDays: 5
   deploymentPrefix: serverless
   environment:
-    NASA_API_KEY: ''
+    NASA_API_KEY: 'scwXDlZEdAAdcZ8JjYcdPXSzF9xUIi9UjQQnERyl'
     CACHE_TTL: 1800
+    DYNAMO_TABLE_NAME: "FusionTable"
+    IS_OFFLINE: true
+    AWS_REGION: ${self:custom.regions.code.${opt:stage}}
   lambdaHashingVersion: 20201221
 plugins:
-  - serverless-plugin-typescript
-  - serverless-plugin-optimize
+  - serverless-esbuild
   - serverless-offline
-  - serverless-jetpack
 
 functions: ${file(config/serverless/functions.${self:custom.functionsFile}.yml)}
 
+resources: ${file(config/serverless/resources.yml)}
