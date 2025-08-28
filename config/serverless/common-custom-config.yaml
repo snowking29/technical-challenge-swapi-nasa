@@ -1,0 +1,20 @@
+# Commons
+serviceName: swapi-nasa
+serviceCode: challenge
+serviceType: workload
+service: ${self:custom.serviceType}-${self:custom.serviceCode}-${self:custom.serviceName}
+functionsFile: ${param:functions, 'cloud'}
+accountId:
+  dev: ${aws:accountId}
+  qas: ${aws:accountId}
+  prd: ${aws:accountId}
+defaultStage: dev
+regions:
+  code:
+    dev: us-east-1
+    qas: us-east-1
+    prd: us-east-1
+  abrev:
+    dev: UE1
+    qas: UE1
+    prd: UE1

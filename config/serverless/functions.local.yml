@@ -1,0 +1,5 @@
+transfer:
+  handler: src/lambda/transfer.handler
+  name: ${self:custom.stage}-${self:service}
+  description: API used for transfer files to different protocols
+  timeout: 600

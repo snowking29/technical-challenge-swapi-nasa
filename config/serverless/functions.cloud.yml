@@ -1,0 +1,30 @@
+getCombined:
+  name: ${self:service}-${self:provider.stage}-getFusion
+  handler: src/handlers/getFusion.handler
+  memorySize: 256
+  timeout: 15
+  events:
+    - http:
+        path: fusionados
+        method: get
+        cors: true
+postResource:
+  name: ${self:service}-${self:provider.stage}-postResource
+  handler: src/handlers/postResource.handler
+  memorySize: 256
+  timeout: 10
+  events:
+    - http:
+        path: almacenar
+        method: post
+        cors: true
+getHistory:
+  name: ${self:service}-${self:provider.stage}-getHistory
+  handler: src/handlers/getHistory.handler
+  memorySize: 256
+  timeout: 10
+  events:
+    - http:
+        path: historial
+        method: get
+        cors: true
