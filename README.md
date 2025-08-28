@@ -1,4 +1,4 @@
-# technical-challenge-swapi-nasa
+# technical-challenge-swapi-spotify
 
 ## Ejecutar localmente
 
