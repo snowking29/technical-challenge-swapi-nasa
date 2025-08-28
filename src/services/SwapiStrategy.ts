@@ -6,55 +6,36 @@ import https from "https";
 
 export class SwapiStrategy implements IFusionStrategy<SwapiPerson> {
   private baseUrl: string;
-  private options: any = {};
 
   constructor(private characterId?: string) {
-    if (process.env.IS_OFFLINE === "true") {
-      this.baseUrl = "http://swapi.dev/api";
-    } else {
-      this.baseUrl = "https://swapi.dev/api";
-      this.options.agent = new https.Agent({ rejectUnauthorized: true });
-    }
+    this.baseUrl = "https://swapi.dev/api";
   }
 
   async fetchAndTransform(): Promise<SwapiPerson> {
     const id = this.characterId || "1";
     const url = `${this.baseUrl}/people/${id}`;
 
-    Logger.info(`IS_OFFLINE: ${process.env.IS_OFFLINE}`);
     Logger.info(`Fetching character from URL: ${url}`);
+    const agent = new https.Agent({ rejectUnauthorized: false });
 
-    if (process.env.IS_OFFLINE === "true") {
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        Logger.info(`Got character from Swapi: ${JSON.stringify(data)}`);
-        return {
-          name: data.name,
-          height: data.height,
-          mass: data.mass,
-          homeworld: data.homeworld
-        };
-      } catch (err: any) {
-        Logger.info("SWAPI fetch failed in offline mode, returning mock character");
-        return {
-          name: "Luke Skywalker",
-          height: "172",
-          mass: "77",
-          homeworld: "Tatooine"
-        };
-      }
+    let data;
+    try {
+      const res = await fetch(url, { agent });
+      data = await res.json();
+    } catch (err) {
+      Logger.error(err);
+      throw err;
     }
-
-    // Fetch en producción con HTTPS
-    const res = await fetch(url, this.options);
-    const data = await res.json();
     Logger.info(`Got character from Swapi: ${JSON.stringify(data)}`);
     return {
       name: data.name,
       height: data.height,
       mass: data.mass,
-      homeworld: data.homeworld
+      hair_color: data.hair_color,
+      skin_color: data.skin_color,
+      eye_color: data.eye_color,
+      birth_year: data.birth_year,
+      gender: data.gender
     };
   }
 }

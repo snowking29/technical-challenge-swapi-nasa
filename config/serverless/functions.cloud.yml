@@ -1,8 +1,6 @@
 getFusion:
   name: ${self:service}-${self:provider.stage}-getFusion
   handler: src/handlers/getFusion.handler
-  memorySize: 256
-  timeout: 15
   events:
     - http:
         path: fusionados
@@ -11,8 +9,6 @@ getFusion:
 postResource:
   name: ${self:service}-${self:provider.stage}-postResource
   handler: src/handlers/postResource.handler
-  memorySize: 256
-  timeout: 10
   events:
     - http:
         path: almacenar
@@ -21,8 +17,6 @@ postResource:
 getHistory:
   name: ${self:service}-${self:provider.stage}-getHistory
   handler: src/handlers/getHistory.handler
-  memorySize: 256
-  timeout: 10
   events:
     - http:
         path: historial

@@ -3,7 +3,9 @@ import { Logger } from "../utils/Logger";
 export class DynamoService {
   private dynamoClient = new DynamoDBClient({
 		region: process.env.AWS_REGION,
-		endpoint: process.env.IS_OFFLINE ? "http://localhost:8000" : undefined //JUST FOR LOCAL
+		endpoint: process.env.IS_OFFLINE === "true"
+      ? "http://localhost:8000"
+      : undefined
 	});
   private tableName = process.env.DYNAMO_TABLE_NAME || "FusionTable";
   private cacheTTL = process.env.CACHE_TTL || 1800;

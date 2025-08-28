@@ -3,12 +3,13 @@ import { FusionFacade } from "../services/FusionFacade";
 import { Logger } from "../utils/Logger";
 
 export const handler: APIGatewayProxyHandler = async (event: any) => {
-  Logger.info(`test`)
-  const characterId = event.queryStringParameters?.id;
+  Logger.info(`GetFusion - Raw Event: ${JSON.stringify(event)}`)
 
+  const characterId = event.queryStringParameters?.id;
+  const characterName = event.queryStringParameters?.name;
   const facade = new FusionFacade(characterId);
   try {
-    const data = await facade.getFusionedData();
+    const data = await facade.getFusionedData(characterName);
     Logger.info(`Getting Data from Facade: ${JSON.stringify(data)}`)
     return { 
       statusCode: 200,

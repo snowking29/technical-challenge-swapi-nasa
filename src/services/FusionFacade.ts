@@ -1,33 +1,38 @@
 import { SwapiStrategy } from "./SwapiStrategy";
-import { NasaStrategy } from "./NasaStrategy";
+import { SpotifyStrategy } from "./SpotifyStrategy";
 import { DynamoService } from "./DynamoService";
 import { SwapiPerson } from "../types/swapi";
-import { NasaApod } from "../types/nasa";
+import { Spotify } from "../types/spotify";
 
 export class FusionFacade {
   private swapi = new SwapiStrategy();
-  private nasa = new NasaStrategy();
   private dynamo = new DynamoService();
   
   constructor(characterId?: string) {
-    this.swapi = new SwapiStrategy(characterId)
+    this.swapi = new SwapiStrategy(characterId);
+    this.dynamo = new DynamoService();
   }
 
-  async getFusionedData(): Promise<{ swapi: SwapiPerson; nasa: NasaApod; timestamp: string }> {
-    const cacheKey = `fusionados_${this.swapi['characterId'] || '1'}`;
+  async getFusionedData(characterName?: string): Promise< SwapiPerson & Spotify & { timestamp: string }> {
+    const provisionalKey = this.swapi['characterId'] || characterName?.replace(/\s+/g, '_') || 'default';
     
-    const cached = await this.dynamo.getCache(cacheKey);
+    const cached = await this.dynamo.getCache(provisionalKey);
     if (cached) return cached;
   
-    const [swapiData, nasaData] = await Promise.all([
-      this.swapi.fetchAndTransform(),
-      this.nasa.fetchAndTransform()
-    ]);
+    const swapiData = await this.swapi.fetchAndTransform();
+    const spotifyCharacter = characterName || swapiData.name;
+
+    const cacheKey = this.swapi['characterId']
+      ? `fusionados_${this.swapi['characterId']}`
+      : `fusionados_${spotifyCharacter.replace(/\s+/g, '_')}`;
   
-    const result = { 
-    	swapi: swapiData, 
-    	nasa: nasaData, 
-    	timestamp: new Date().toISOString()
+    const spotifyStrategy = new SpotifyStrategy(spotifyCharacter);
+    const spotifyData = await spotifyStrategy.fetchAndTransform();
+
+    const result = {
+      ...swapiData,
+      ...spotifyData,
+      timestamp: new Date().toISOString()
     };
   
     await this.dynamo.setCache(cacheKey, result);
