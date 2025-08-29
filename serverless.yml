@@ -14,7 +14,6 @@ provider:
   logRetentionInDays: 5
   deploymentPrefix: serverless
   environment:
-    NASA_API_KEY: ''
     SPOTIFY_CLIENT_ID: ''
     SPOTIFY_CLIENT_SECRET: ''
     CACHE_TTL: 1800
