@@ -21,8 +21,8 @@
     "resolveJsonModule": true,
     "declaration": true,
     "strictNullChecks": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["./**/*.ts"],
-  "exclude": ["dist", ".serverless", "coverage", "test"]
+  "exclude": ["dist", ".serverless", "coverage"]
 }

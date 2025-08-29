@@ -1,5 +1,5 @@
 # Commons
-serviceName: swapi-nasa
+serviceName: swapi-spotify
 serviceCode: challenge
 serviceType: workload
 service: ${self:custom.serviceType}-${self:custom.serviceCode}-${self:custom.serviceName}
